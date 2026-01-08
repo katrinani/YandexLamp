@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.SeekBar
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -33,7 +34,7 @@ class MainFragment: Fragment(R.layout.main_fragment) {
             }
         }
         binding.colorRecycler.adapter = this.adapter
-
+        // TODO цвета в ряд
         viewModel.colors.observe(viewLifecycleOwner) { colors ->
             colors?.let {
                 adapter?.submitList(it)
@@ -42,7 +43,15 @@ class MainFragment: Fragment(R.layout.main_fragment) {
         // наполнение данными
         viewModel.status.observe(viewLifecycleOwner) { status ->
             binding.statusText.text = status ?: ""
+            Toast.makeText(
+                requireContext(),
+                status,
+                Toast.LENGTH_LONG
+            ).show()
         }
+        // TODO текущая яркость в 0, текущий цвет null
+        // ползунок работает,кнопки тоже работают
+        // TODO обложить тостами все
 
         viewModel.isOn.observe(viewLifecycleOwner) { isOn ->
             binding.switchLight.isEnabled = isOn == true

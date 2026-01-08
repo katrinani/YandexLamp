@@ -68,7 +68,7 @@ class MainViewModel @Inject constructor(
                 updateStatusText()
             } catch (e: Exception) {
                 _error.value = "Ошибка загрузки: ${e.message}"
-                _status.value = "Ошибка подключения"
+                _status.value = "Ошибка подключения: ${e.message}"
             } finally {
                 _isLoading.value = false
             }
