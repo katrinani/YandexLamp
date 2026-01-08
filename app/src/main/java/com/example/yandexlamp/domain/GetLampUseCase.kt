@@ -2,7 +2,7 @@ package com.example.yandexlamp.domain
 
 import com.example.yandexlamp.data.LampRepository
 import com.example.yandexlamp.data.model.BrightnessLevel
-import com.example.yandexlamp.data.model.Color
+import com.example.yandexlamp.data.model.ColorInfo
 import javax.inject.Inject
 
 interface GetLampUseCase {
@@ -12,9 +12,9 @@ interface GetLampUseCase {
     suspend fun getCurrentLevel(): Int?
 
     // цвета
-    suspend fun getColors(): List<Color>?
+    suspend fun getColors(): List<ColorInfo>?
     suspend fun setColor(color: String): Boolean
-    suspend fun getCurrentColor(): Color?
+    suspend fun getCurrentColor(): ColorInfo?
     suspend fun getColorNamesOnly(): List<String>?
 
     // вкл/выкл
@@ -36,13 +36,13 @@ class GetLampUseCaseImpl @Inject constructor(
     override suspend fun getCurrentLevel(): Int? =
         repository.getCurrentLevel()
 
-    override suspend fun getColors(): List<Color>? =
+    override suspend fun getColors(): List<ColorInfo>? =
         repository.getColors()
 
     override suspend fun setColor(color: String): Boolean =
         repository.setColor(color)
 
-    override suspend fun getCurrentColor(): Color? =
+    override suspend fun getCurrentColor(): ColorInfo? =
         repository.getCurrentColor()
 
     override suspend fun getColorNamesOnly(): List<String>? =

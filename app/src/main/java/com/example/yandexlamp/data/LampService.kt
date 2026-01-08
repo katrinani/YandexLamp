@@ -1,7 +1,7 @@
 package com.example.yandexlamp.data
 
 import com.example.yandexlamp.data.model.BrightnessLevel
-import com.example.yandexlamp.data.model.Color
+import com.example.yandexlamp.data.model.ColorInfo
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -25,7 +25,7 @@ interface LampService {
     // цвета
     @GET("color/")
     suspend fun getColors():
-            Response<List<Color>>
+            Response<List<ColorInfo>>
 
     @POST("color/")
     suspend fun setColor(
@@ -34,7 +34,7 @@ interface LampService {
 
     @GET("color/current/")
     suspend fun getCurrentColor():
-            Response<Color>
+            Response<ColorInfo>
 
     @GET("color/names_only/")
     suspend fun getColorNamesOnly():

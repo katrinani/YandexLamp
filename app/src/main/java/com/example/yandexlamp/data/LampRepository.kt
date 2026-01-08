@@ -2,7 +2,7 @@ package com.example.yandexlamp.data
 
 
 import com.example.yandexlamp.data.model.BrightnessLevel
-import com.example.yandexlamp.data.model.Color
+import com.example.yandexlamp.data.model.ColorInfo
 import javax.inject.Inject
 
 interface LampRepository {
@@ -12,9 +12,9 @@ interface LampRepository {
     suspend fun getCurrentLevel(): Int?
 
     // цвета
-    suspend fun getColors(): List<Color>?
+    suspend fun getColors(): List<ColorInfo>?
     suspend fun setColor(color: String): Boolean
-    suspend fun getCurrentColor(): Color?
+    suspend fun getCurrentColor(): ColorInfo?
     suspend fun getColorNamesOnly(): List<String>?
 
     // вкл/выкл
@@ -49,7 +49,7 @@ class LampRepositoryImpl @Inject constructor(
         else 0
     }
 
-    override suspend fun getColors(): List<Color>? {
+    override suspend fun getColors(): List<ColorInfo>? {
         val response =  service.getColors()
 
         return if (response.isSuccessful)
@@ -63,7 +63,7 @@ class LampRepositoryImpl @Inject constructor(
         return response.isSuccessful
     }
 
-    override suspend fun getCurrentColor(): Color? {
+    override suspend fun getCurrentColor(): ColorInfo? {
         val response =  service.getCurrentColor()
 
         return if (response.isSuccessful)
