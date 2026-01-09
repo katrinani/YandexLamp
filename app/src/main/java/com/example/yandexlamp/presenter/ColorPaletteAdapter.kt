@@ -9,24 +9,15 @@ import com.example.yandexlamp.data.model.ColorMapper
 import com.example.yandexlamp.databinding.ItemColorBinding
 import androidx.core.graphics.toColorInt
 
-class ColorPaletteAdapter: RecyclerView.Adapter<ColorPaletteAdapter.ViewHolder>() {
+class ColorPaletteAdapter(
+    private var onColorClick: (ColorInfo) -> Unit
+): RecyclerView.Adapter<ColorPaletteAdapter.ViewHolder>() {
     private var listColorInfos: List<ColorInfo> = listOf()
-    var onColorClick: ((ColorInfo) -> Unit)? = null
 
     class ViewHolder(
         private val binding: ItemColorBinding,
-        private val onColorClick: ((ColorInfo) -> Unit)?
+        private val onColorClick: (ColorInfo) -> Unit
     ): RecyclerView.ViewHolder(binding.root) {
-
-        private lateinit var currentColorInfo: ColorInfo
-
-        init {
-            binding.root.setOnClickListener {
-                if (::currentColorInfo.isInitialized) {
-                    onColorClick?.invoke(currentColorInfo)
-                }
-            }
-        }
 
         fun bind(item: ColorInfo) {
             // устанавливаем данные
@@ -36,7 +27,12 @@ class ColorPaletteAdapter: RecyclerView.Adapter<ColorPaletteAdapter.ViewHolder>(
             val hexColor = ColorMapper.getHexColor(item.color)
             val drawable = binding.itemColorCircle.background as? GradientDrawable
             drawable?.setStroke(6, hexColor.toColorInt())
+
+            binding.itemColor.setOnClickListener {
+                onColorClick(item)
+            }
         }
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

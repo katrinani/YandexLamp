@@ -34,17 +34,14 @@ class MainFragment: Fragment(R.layout.main_fragment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        binding.colorRecycler.layoutManager = GridLayoutManager(
-            requireContext(), 3,
-            )
+        binding.colorRecycler.layoutManager = GridLayoutManager(requireContext(), 4)
 
-        adapter = ColorPaletteAdapter().apply {
-            onColorClick = { colorInfo ->
-                Log.d(TAG_DETAILED, "Установлен цвет: ${colorInfo.color}")
-                viewModel.setColor(colorInfo.color)
-            }
-        }
+        adapter = ColorPaletteAdapter({ colorInfo ->
+            Log.d(TAG_DETAILED, "Установлен цвет: ${colorInfo.color}")
+            viewModel.setColor(colorInfo.color)
+        })
         binding.colorRecycler.adapter = this.adapter
+
         viewModel.colors.observe(viewLifecycleOwner) { colors ->
             colors?.let {
                 adapter?.submitList(it)
