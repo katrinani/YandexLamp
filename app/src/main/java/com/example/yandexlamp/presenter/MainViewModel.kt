@@ -1,9 +1,13 @@
 package com.example.yandexlamp.presenter
 
+import android.util.Log
+import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.yandexlamp.data.model.BrightnessLevel
 import com.example.yandexlamp.data.model.ColorInfo
 import com.example.yandexlamp.domain.GetLampUseCase
 import kotlinx.coroutines.launch
@@ -12,12 +16,17 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val getLampUseCase: GetLampUseCase
 ): ViewModel() {
+    companion object {
+        private const val TAG = "MainViewModel"
+        private const val TAG_DETAILED = "MainViewModel-Detailed"
+    }
+
     private val _brightness = MutableLiveData<Int?>()
     val brightness: LiveData<Int?>
         get() = _brightness
 
-    private val _brightnessLevel = MutableLiveData<com.example.yandexlamp.data.model.BrightnessLevel?>()
-    val brightnessLevel: LiveData<com.example.yandexlamp.data.model.BrightnessLevel?>
+    private val _brightnessLevel = MutableLiveData<BrightnessLevel?>()
+    val brightnessLevel: LiveData<BrightnessLevel?>
         get() = _brightnessLevel
 
     private val _currentColor = MutableLiveData<ColorInfo?>()
@@ -58,14 +67,28 @@ class MainViewModel @Inject constructor(
             _error.value = null
 
             try {
+                Log.i(TAG, "Начало загрузки всех данных")
+
                 _brightnessLevel.value = getLampUseCase.getBrightnessLevel()
+                Log.d(TAG_DETAILED, "Яркость загружена: ${_brightnessLevel.value}")
+
                 _brightness.value = getLampUseCase.getCurrentLevel()
+                Log.d(TAG_DETAILED, "Текущий уровень: ${_brightness.value}")
+
                 _colors.value = getLampUseCase.getColors()
-                _colorNames.value = getLampUseCase.getColors()?.map { it.name }
+                Log.d(TAG_DETAILED, "Цвета загружены: ${_colors.value?.size ?: 0} шт.")
+
+                _colorNames.value = getLampUseCase.getColors()?.map { it.color }
+                Log.d(TAG_DETAILED, "Названия цветов: ${_colorNames.value}")
+
                 _currentColor.value = getLampUseCase.getCurrentColor()
+                Log.d(TAG_DETAILED, "Текущий цвет: ${_currentColor.value?.color}")
+
                 _isOn.value = getLampUseCase.getState()
+                Log.d(TAG_DETAILED, "Состояние лампы: ${(_isOn.value == true)}")
 
                 updateStatusText()
+                Log.i(TAG, "Данные успешно загружены")
             } catch (e: Exception) {
                 _error.value = "Ошибка загрузки: ${e.message}"
                 _status.value = "Ошибка подключения: ${e.message}"
@@ -92,11 +115,11 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun setColor(color: ColorInfo) {
+    fun setColor(color: String) {
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                val success = getLampUseCase.setColor(color.name)
+                val success = getLampUseCase.setColor(color)
                 if (success) {
                     getLampUseCase.getCurrentColor()?.let {
                         _currentColor.value = it

@@ -35,7 +35,7 @@ class ColorPaletteAdapter: RecyclerView.Adapter<ColorPaletteAdapter.ViewHolder>(
             // меняем цвет кружка
             val hexColor = ColorMapper.getHexColor(item.color)
             val drawable = binding.itemColorCircle.background as? GradientDrawable
-            drawable?.setStroke(2, hexColor.toColorInt())
+            drawable?.setStroke(6, hexColor.toColorInt())
         }
     }
 

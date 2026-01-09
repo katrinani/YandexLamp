@@ -18,7 +18,7 @@ interface LampService {
         @Query("level") level: Int
     ): Response<Boolean>
 
-    @GET("brightness/current/")
+    @GET("brightness/current")
     suspend fun getCurrentLevel():
             Response<Int>
 
@@ -32,11 +32,11 @@ interface LampService {
         @Query("color") color: String
     ): Response<Boolean>
 
-    @GET("color/current/")
+    @GET("color/current")
     suspend fun getCurrentColor():
             Response<ColorInfo>
 
-    @GET("color/names_only/")
+    @GET("color/names_only")
     suspend fun getColorNamesOnly():
             Response<List<String>>
 
@@ -45,11 +45,11 @@ interface LampService {
     suspend fun getState():
             Response<Boolean> // true if ON, false if OFF
 
-    @POST("state/on/")
+    @POST("state/on")
     suspend fun turnOn():
             Response<Boolean>
 
-    @POST("state/off/")
+    @POST("state/off")
     suspend fun turnOff():
             Response<Boolean>
 }

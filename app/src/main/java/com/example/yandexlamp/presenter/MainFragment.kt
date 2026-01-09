@@ -2,12 +2,13 @@ package com.example.yandexlamp.presenter
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import com.example.yandexlamp.R
 import com.example.yandexlamp.appComponent
 import com.example.yandexlamp.databinding.MainFragmentBinding
@@ -16,6 +17,11 @@ import dev.androidbroadcast.vbpd.viewBinding
 import javax.inject.Inject
 
 class MainFragment: Fragment(R.layout.main_fragment) {
+    companion object {
+        private const val TAG = "MainFragment"
+        private const val TAG_DETAILED = "MainFragment-Detailed"
+    }
+
     private val binding: MainFragmentBinding by viewBinding(
         MainFragmentBinding::bind
     )
@@ -27,34 +33,32 @@ class MainFragment: Fragment(R.layout.main_fragment) {
     private var adapter: ColorPaletteAdapter? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.colorRecycler.layoutManager = LinearLayoutManager(requireContext())
+
+        binding.colorRecycler.layoutManager = GridLayoutManager(
+            requireContext(), 3,
+            )
+
         adapter = ColorPaletteAdapter().apply {
             onColorClick = { colorInfo ->
-                viewModel.setColor(colorInfo)
+                Log.d(TAG_DETAILED, "Установлен цвет: ${colorInfo.color}")
+                viewModel.setColor(colorInfo.color)
             }
         }
         binding.colorRecycler.adapter = this.adapter
-        // TODO цвета в ряд
         viewModel.colors.observe(viewLifecycleOwner) { colors ->
             colors?.let {
                 adapter?.submitList(it)
             }
         }
-        // наполнение данными
+        // -------- наполнение данными
         viewModel.status.observe(viewLifecycleOwner) { status ->
             binding.statusText.text = status ?: ""
-            Toast.makeText(
-                requireContext(),
-                status,
-                Toast.LENGTH_LONG
-            ).show()
         }
-        // TODO текущая яркость в 0, текущий цвет null
-        // ползунок работает,кнопки тоже работают
-        // TODO обложить тостами все
 
         viewModel.isOn.observe(viewLifecycleOwner) { isOn ->
+            Log.d(TAG_DETAILED, "Установлен свитч: $isOn")
             binding.switchLight.isEnabled = isOn == true
+            binding.switchLight.isChecked = isOn == true
         }
 
         viewModel.brightness.observe(viewLifecycleOwner) { brightness ->
@@ -65,7 +69,7 @@ class MainFragment: Fragment(R.layout.main_fragment) {
         }
 
         viewModel.currentColor.observe(viewLifecycleOwner) { color ->
-            binding.currentColorValue.text = "Текущий: ${color?.name}"
+            binding.currentColorValue.text = "Текущий: ${color?.color}"
         }
 
         // Включение/выключение
@@ -74,24 +78,23 @@ class MainFragment: Fragment(R.layout.main_fragment) {
         }
 
         // изменение ползунка яркости
-        binding.brightnessSeekbar.setOnClickListener {
-            binding.brightnessSeekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onProgressChanged(
-                    seekBar: SeekBar?,
-                    progress: Int,
-                    fromUser: Boolean
-                ) {
-                    if (fromUser) {
-                        viewModel.setBrightness(progress)
-                    }
+        binding.brightnessSeekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(
+                seekBar: SeekBar?,
+                progress: Int,
+                fromUser: Boolean
+            ) {
+                if (fromUser) {
+                    Log.d(TAG_DETAILED, "Передвинут ползунок яркости: $progress")
+                    viewModel.setBrightness(progress)
                 }
+            }
 
-                override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
 
-                override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
 
-            })
-        }
+        })
 
         // установка минимальной яркости
         binding.btnBrightnessMin.setOnClickListener{

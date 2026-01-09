@@ -173,29 +173,34 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/brightness_controls" />
 
-        <!-- Палитра цветов -->
-        <LinearLayout
-            android:id="@+id/color_palette"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/color_recycler"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
             android:orientation="horizontal"
+            android:gravity="center"
+
+            tools:listitem="@layout/item_color"
+            tools:itemCount="3"
+            tools:orientation="horizontal"
+            tools:ignore="MissingConstraints"
 
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/color_label">
+            app:layout_constraintTop_toBottomOf="@id/color_label"/>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/color_recycler"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_gravity="start"
+        <!-- Палитра цветов -->
+<!--        <LinearLayout-->
+<!--            android:id="@+id/color_palette"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginBottom="16dp"-->
+<!--            android:orientation="horizontal"-->
 
-                tools:listitem="@layout/item_color"
-                tools:itemCount="3"
-                tools:orientation="horizontal"
-                />
-        </LinearLayout>
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/color_label">-->
+
+
+<!--        </LinearLayout>-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
